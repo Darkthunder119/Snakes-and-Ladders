@@ -14,9 +14,13 @@ class Board extends React.Component {
     this.state = {
       diceRoll: 0,
       isTurn: true,
-      userOne: { color: "#000", userOneCurrentPosition: 1, userOneRolls: [] },
+      userOne: {
+        color: "#21bd5c",
+        userOneCurrentPosition: 1,
+        userOneRolls: [],
+      },
       userTwo: {
-        color: "#0008080",
+        color: "#941100",
         userTwoCurrentPosition: 1,
         userTwoRolls: [],
       },
@@ -26,21 +30,26 @@ class Board extends React.Component {
   }
 
   rollDoneCallback(num) {
-    if (this.state.isTurn) {
-      this.setState({
-        diceRoll: num,
-        userOneCurrentPosition: this.state.userOne.userOneCurrentPosition + num,
-        isTurn: false,
-      });
-    } else {
-      this.setState({
-        diceRoll: num,
-        userTwoCurrentPosition: this.state.userTwo.userTwoCurrentPosition + num,
-        isTurn: true,
-      });
-    }
-    this.calculateUps();
-    this.calculateDowns();
+    this.setState({
+      ...this.state,
+      diceRoll: num,
+      isTurn: !this.state.isTurn,
+      userOne: {
+        ...this.state.userOne,
+        userOneCurrentPosition: this.state.isTurn
+          ? this.state.userOne.userOneCurrentPosition + num
+          : this.state.userOne.userOneCurrentPosition,
+      },
+      userTwo: {
+        ...this.state.userTwo,
+        userTwoCurrentPosition: !this.state.isTurn
+          ? this.state.userTwo.userTwoCurrentPosition + num
+          : this.state.userTwo.userTwoCurrentPosition,
+      },
+    });
+
+    // this.calculateUps();
+    // this.calculateDowns();
   }
 
   componentDidUpdate(_, prevState) {
@@ -79,8 +88,15 @@ class Board extends React.Component {
         <section className="Board">
           {board.map((val, i) => (
             <Tiles key={i} boardNumbers={val} board={board}>
-              <Users userOnePosition={userOne.userOneCurrentPosition} />
-              <Users userTwoPosition={userTwo.userTwoCurrentPosition} />
+              <Users
+                userOnePosition={userOne.userOneCurrentPosition}
+                userOne
+                color={userOne.color}
+              />
+              <Users
+                userTwoPosition={userTwo.userTwoCurrentPosition}
+                color={userTwo.color}
+              />
             </Tiles>
           ))}
         </section>
@@ -96,7 +112,7 @@ class Board extends React.Component {
           />
 
           <div className="playerArea__colors">
-            <p>User 1 Color: </p>
+            <p>Player 1 Color: </p>
             <input
               type="color"
               value={userOne.color}
@@ -106,7 +122,7 @@ class Board extends React.Component {
                 })
               }
             />
-            <p>User 2 Color: </p>
+            <p>Player 2 Color: </p>
             <input
               type="color"
               value={userTwo.color}
@@ -117,19 +133,19 @@ class Board extends React.Component {
               }
             />
           </div>
-          <p>{diceRoll !== 0 && `Rolled a ${diceRoll}!`}</p>
           <p>
             {isTurn === false &&
               userOne.userOneCurrentPosition !== 1 &&
-              `User One Climbed to ${userOne.userOneCurrentPosition}`}
+              diceRoll !== 0 &&
+              `Player 1 rolled a ${diceRoll} and climbed to ${userOne.userOneCurrentPosition}`}
           </p>
           <p>
             {isTurn === true &&
               userTwo.userTwoCurrentPosition !== 1 &&
-              `User Two Climbed to ${userTwo.userTwoCurrentPosition}`}
+              diceRoll !== 0 &&
+              `Player 2 rolled a ${diceRoll} and climbed to ${userTwo.userTwoCurrentPosition}`}
           </p>
-          <p>{isTurn ? "User One's Turn..." : "User Two's Turn..."} </p>
-          <p ref={this.myRef}></p>
+          <p>{isTurn ? "Player One's Turn..." : "Player Two's Turn..."} </p>
         </section>
       </section>
     );
