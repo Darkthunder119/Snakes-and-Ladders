@@ -4,13 +4,37 @@ import Dice from "react-dice-complete";
 import "react-dice-complete/dist/react-dice-complete.css";
 import Users from "../Users/Users";
 import Tiles from "../Tiles/Tiles";
+import styled from "styled-components";
+import InfoScreen from "../InfoScreen/InfoScreen";
 // import Ladders from "../Ladders/Ladders";
+
+const Page = styled.section`
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #808080;
+`;
+const PlayArea = styled.section`
+  display: flex;
+  flex: 50%;
+  flex-wrap: wrap-reverse;
+  flex-direction: row;
+  background-color: #808080;
+  margin: 1rem;
+  justify-content: center;
+  align-content: flex-end;
+`;
+
+const Heading = styled.h1`
+  text-align: center;
+`;
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
-    this.rollDoneCallback = this.rollDoneCallback.bind(this);
-    // this.myRef = React.createRef();
     this.state = {
       diceRoll: 0,
       isTurn: true,
@@ -29,7 +53,7 @@ class Board extends React.Component {
     };
   }
 
-  rollDoneCallback(num) {
+  rollDoneCallback = (num) => {
     this.setState({
       ...this.state,
       diceRoll: num,
@@ -50,7 +74,7 @@ class Board extends React.Component {
 
     // this.calculateUps();
     // this.calculateDowns();
-  }
+  };
 
   componentDidUpdate(_, prevState) {
     if (this.state !== prevState) {
@@ -80,12 +104,19 @@ class Board extends React.Component {
       }
     });
   }
+  changeColorHandler = (id, color) => {
+    if (id === 1)
+      this.setState({ userOne: { ...this.state.userOne, color: color } });
+    if (id === 2)
+      this.setState({ userTwo: { ...this.state.userTwo, color: color } });
+  };
 
   render() {
     const { board, diceRoll, userOne, userTwo, isTurn } = this.state;
     return (
-      <section className="Page">
-        <section className="Board">
+      <Page>
+        <Heading>Snakes and Ladders</Heading>
+        <PlayArea>
           {board.map((val, i) => (
             <Tiles key={i} boardNumbers={val} board={board}>
               <Users
@@ -99,55 +130,23 @@ class Board extends React.Component {
               />
             </Tiles>
           ))}
-        </section>
-        <section className="playerArea">
-          <h1 className="playerArea__heading">Snakes and Ladders</h1>
-          <Dice
-            numDice={1}
-            rollDone={this.rollDoneCallback}
-            ref={(dice) => (this.reactDice = dice)}
-            outline={true}
-            faceColor={"#0008080"}
-            dotColor={"#FFFFFF"}
-          />
-
-          <div className="playerArea__colors">
-            <p>Player 1 Color: </p>
-            <input
-              type="color"
-              value={userOne.color}
-              onChange={(e) =>
-                this.setState({
-                  userOne: { ...userOne, color: e.target.value },
-                })
-              }
-            />
-            <p>Player 2 Color: </p>
-            <input
-              type="color"
-              value={userTwo.color}
-              onChange={(e) =>
-                this.setState({
-                  userTwo: { ...userTwo, color: e.target.value },
-                })
-              }
-            />
-          </div>
-          <p>
-            {isTurn === false &&
-              userOne.userOneCurrentPosition !== 1 &&
-              diceRoll !== 0 &&
-              `Player 1 rolled a ${diceRoll} and climbed to ${userOne.userOneCurrentPosition}`}
-          </p>
-          <p>
-            {isTurn === true &&
-              userTwo.userTwoCurrentPosition !== 1 &&
-              diceRoll !== 0 &&
-              `Player 2 rolled a ${diceRoll} and climbed to ${userTwo.userTwoCurrentPosition}`}
-          </p>
-          <p>{isTurn ? "Player One's Turn..." : "Player Two's Turn..."} </p>
-        </section>
-      </section>
+        </PlayArea>
+        <Dice
+          numDice={1}
+          rollDone={this.rollDoneCallback}
+          ref={(dice) => (this.reactDice = dice)}
+          outline={true}
+          faceColor={"#0008080"}
+          dotColor={"#FFFFFF"}
+        />
+        <InfoScreen
+          diceRoll={diceRoll}
+          isTurn={isTurn}
+          userOne={userOne}
+          userTwo={userTwo}
+          changeColorHandler={this.changeColorHandler}
+        />
+      </Page>
     );
   }
 }
