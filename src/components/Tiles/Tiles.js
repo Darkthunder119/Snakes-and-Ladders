@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import Users from "../Users/Users";
+import Ladders from "../Ladders/Ladders";
 
 const Tile = styled.div`
   outline: 1px solid black;
@@ -19,14 +21,19 @@ function Tiles(props) {
   return (
     <Tile>
       {props.boardNumbers}
-      {props.children[0].props.userOnePosition === props.boardNumbers
-        ? props.children[0]
-        : ""}
-      {props.children[1].props.userTwoPosition === props.boardNumbers
-        ? props.children[1]
-        : ""}
-      {/* {props.children[2].props.snakes.map(val=>val.startPosition === props.boardNumbers? props.children[2] : '' )} */}
-      {/* {props.children[3].props.ladders.map(val=>val.startPosition === props.boardNumbers? props.children[3] : '')     } */}
+      {props.boardNumbers === props.userOnePosition && (
+        <Users userOne color={props.userOneColor} />
+      )}
+      {props.boardNumbers === props.userTwoPosition && (
+        <Users color={props.userTwoColor} />
+      )}
+      {console.log("hi from Tiles")}
+      {/* {
+        props.ladders.map(
+          (val) =>
+            (val.startPosition === props.boardNumbers ||
+              val.endPosition === props.boardNumbers) && <Ladders />
+        )} */}
     </Tile>
   );
 }

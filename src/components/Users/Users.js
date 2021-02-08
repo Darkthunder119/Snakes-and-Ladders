@@ -13,6 +13,7 @@ const User = styled.div`
 `;
 
 const Users = (props) => {
+  console.log("hi from users");
   return <User color={props.color} userOne={props.userOne} />;
 };
 

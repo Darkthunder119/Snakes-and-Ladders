@@ -17,6 +17,7 @@ const InfoScreen = (props) => {
     if (e.target.id === "1") props.changeColorHandler(1, e.target.value);
     if (e.target.id === "2") props.changeColorHandler(2, e.target.value);
   };
+  console.log("hi from infoscreen");
   return (
     <InfoBox>
       <ColorsContainer>

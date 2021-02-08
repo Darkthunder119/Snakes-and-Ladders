@@ -1,8 +1,15 @@
 import React from "react";
-import cuck from "../../assets/images/cucumber_icon-1.svg";
-import "./Ladders.scss";
+import styled from "styled-components";
 
-function Ladders() {
-  return <img src={cuck} className="imageLadder" alt="ladders"></img>;
+const Ladder = styled.div`
+  color: ${(props) => props.color};
+  font-weight: 1000;
+  top: 25%;
+  left: 33%;
+  position: absolute;
+`;
+
+function Ladders(props) {
+  return <Ladder color={props.ladders[0].color}>/-/</Ladder>;
 }
 export default Ladders;

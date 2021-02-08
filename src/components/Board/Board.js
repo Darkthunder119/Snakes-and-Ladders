@@ -2,11 +2,9 @@ import React from "react";
 import "./board.scss";
 import Dice from "react-dice-complete";
 import "react-dice-complete/dist/react-dice-complete.css";
-import Users from "../Users/Users";
 import Tiles from "../Tiles/Tiles";
 import styled from "styled-components";
 import InfoScreen from "../InfoScreen/InfoScreen";
-// import Ladders from "../Ladders/Ladders";
 
 const Page = styled.section`
   width: 100vw;
@@ -48,7 +46,11 @@ class Board extends React.Component {
         userTwoCurrentPosition: 1,
         userTwoRolls: [],
       },
-
+      ladders: [
+        { startPosition: 3, endPosition: 27, color: "#efcc8f" },
+        { startPosition: 17, endPosition: 51, color: "#33f4d1" },
+        { startPosition: 37, endPosition: 83, color: "#efcc8f" },
+      ],
       board: Array.from(Array(100)).map((e, i) => i + 1),
     };
   }
@@ -72,7 +74,7 @@ class Board extends React.Component {
       },
     });
 
-    // this.calculateUps();
+    this.calculateUps();
     // this.calculateDowns();
   };
 
@@ -83,14 +85,22 @@ class Board extends React.Component {
   }
 
   calculateUps() {
-    this.state.cucumberArray.forEach((element) => {
+    this.state.ladders.forEach((element) => {
       if (element.startPosition === this.state.userOne.userOneCurrentPosition) {
-        this.setState({ userOneCurrentPosition: element.endPosition });
-        //   this.myRef.current.value = `You ate a cucumber and went up to ${element.endPosition}`;
+        this.setState({
+          userOne: {
+            ...this.state.userOne,
+            userOneCurrentPosition: element.endPosition,
+          },
+        });
       }
       if (element.startPosition === this.state.userTwo.userTwoCurrentPosition) {
-        this.setState({ userTwoCurrentPosition: element.endPosition });
-        // this.myRef.current.value = `You ate a cucumber and went up to ${element.endPosition}`;
+        this.setState({
+          userTwo: {
+            ...this.state.userTwo,
+            userTwoCurrentPosition: element.endPosition,
+          },
+        });
       }
     });
   }
@@ -112,23 +122,23 @@ class Board extends React.Component {
   };
 
   render() {
-    const { board, diceRoll, userOne, userTwo, isTurn } = this.state;
+    console.log("hi from page");
+    const { board, diceRoll, userOne, userTwo, isTurn, ladders } = this.state;
     return (
       <Page>
         <Heading>Snakes and Ladders</Heading>
         <PlayArea>
           {board.map((val, i) => (
-            <Tiles key={i} boardNumbers={val} board={board}>
-              <Users
-                userOnePosition={userOne.userOneCurrentPosition}
-                userOne
-                color={userOne.color}
-              />
-              <Users
-                userTwoPosition={userTwo.userTwoCurrentPosition}
-                color={userTwo.color}
-              />
-            </Tiles>
+            <Tiles
+              key={i}
+              boardNumbers={val}
+              board={board}
+              userOnePosition={userOne.userOneCurrentPosition}
+              userOneColor={userOne.color}
+              userTwoPosition={userTwo.userTwoCurrentPosition}
+              userTwoColor={userTwo.color}
+              ladders={ladders}
+            ></Tiles>
           ))}
         </PlayArea>
         <Dice
